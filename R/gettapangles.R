@@ -5,7 +5,7 @@ GetTapAngles<- function(experiment) {
     distortion <-  c(rep(0,64),rep(30,160), rep(-30,16), rep(NA, 48))
   } else if (experiment == 2) {
     participants<- c(1:26,38,40:44)
-    distortion <-  c(rep(NA, 48)) 
+    distortion <-  c(rep(0,64),rep(30,160), rep(-30,16), rep(NA, 48))
   } else if (experiment == 3) {
     participants<- c(1:9)
     P1table <- read.table('Time Model Variant 3 Selected Data/time_model3_1/1_1__time_model_3_reach_selected.txt')
@@ -30,52 +30,13 @@ GetTapAngles<- function(experiment) {
     
     partiangles<-GetTapData(participant = participant, experiment = experiment)
     print(participant)
-    #baselining only works for experiment 1&5, 2 & 4 only have 32 aligned in total 
-    #so they would need different amount of trials
-    #baselinedangles <- baselinebyNCaligned(df = partiangles, experiment = experiment, dist = distortion)
     expangles[,sprintf('p%d',participant)] <- partiangles$reachdeviations
-    #expangles[,sprintf('p%d',participant)] <- baselinedangles$reaches
+
   }
   outputfilename<- sprintf('../../non-baseline/data/time_model%d_Tap_Angles.csv', experiment)
   
   write.csv(expangles, file = outputfilename,  row.names = F, quote = F)
 }
-
-
-
-
-
-
-baselinebyNCaligned<- function(df, experiment, dist) {
-  
-  angles<-df$targetangles
-  reaches<- df$reachdeviations
-  if (length(reaches)<length(dist)){
-    reaches<- c(reaches, rep(NA, times = (length(dist)-length(reaches))))
-    angles<- c(angles, rep(NA, times = (length(dist)-length(angles))))
-  }
-  
-  #take an average of the aligned data where distortion = 0
-  #subtract that from reach angles
-  if (experiment == 1| experiment == 5) {
-    bias<-mean(df$reachdeviations[32:64], na.rm = TRUE)
-    df$reachdeviations[1:288]<- df$reachdeviations[1:288] - 0
-  } else if (experiment %in% c(2,4,6)) {
-    
-    bias<-mean(df$reachdeviations[0:32], na.rm = TRUE)
-    reaches[1:256]<- reaches[1:256] - 0
-    # 
-    # bias<-mean(df$reachdeviations[1:32], na.rm = TRUE)
-    # df$reachdeviations[1:320]<- df$reachdeviations[1:320] - bias
-  } else if (experiment == 3) {
-    bias<-mean(df$reachdeviations[23:49], na.rm = TRUE)
-    corrected <- df$reachdeviations - 0
-    df$reachdeviations <- corrected
-  }
-  data<- data.frame(reaches, angles)
-  return(data)
-}
-
 
 
 
@@ -117,7 +78,7 @@ GetTapFilenames<- function (ppn, expn) {
       filenames <- c(filenames, sprintf('%s%s%d_%d__time_model_prop_selected.txt',expfolder,ppfolder,ppn,taskno))
     }
   } else if (expn == 2) {
-    tasknumbers <- c(4)
+    tasknumbers <- c(1:4)
     
     expfolder <- '../Time Model Good Data/Time Model Exposure Data/'
     
@@ -126,7 +87,7 @@ GetTapFilenames<- function (ppn, expn) {
     
     for (taskno in tasknumbers) {
       
-      filenames <- c(filenames, sprintf('%s%s%d_%d__time_model_reach_selected.txt',expfolder,ppfolder,ppn,taskno))
+      filenames <- c(filenames, sprintf('%s%s%d_%d__time_model_Prop_selected.txt',expfolder,ppfolder,ppn,taskno))
     }
   } else if (expn == 3) {
     tasknumbers <- c(1)
@@ -206,7 +167,7 @@ CalculateTapAngles<- function (filename, experiment) {
   blocknos <- unique(df$block)
   
   
-  if (experiment == 2) {
+  if (experiment == 4) {
     reachdeviations<- rep(NA, times= 48)
     for (i in 1:length(blocknos))
       reachdeviations[i]<- unique(df$targetangle_deg[df$block == blocknos[i]])
