@@ -1,5 +1,6 @@
-CompareCWvsCCW<- function(exp){
-
+CompareCWvsCCW<- function(exp, direction){
+  library(effsize)
+  library(SMCL)
 # Load required data based on function arugment
 Ldata<- sprintf("data/%s_Localizations.csv", exp)
 Adata<- sprintf("data/%s_Tap_Angles.csv", exp)
@@ -46,15 +47,15 @@ CCWRM$Direction<- "CCW"
 RM<-rbind(CWRM,CCWRM)
 
 print(sprintf("Comparison of CW and CCW localization targets for %s feedback", exp))
-print(t.test(RM$Aligned[RM$Direction == "CW"],RM$Aligned[RM$Direction == "CCW"]))
+print(t.test(RM$Aligned[RM$Direction == "CW"],RM$Aligned[RM$Direction == "CCW"], alternative = direction))
 print(etaSquaredTtest(RM$Aligned[RM$Direction == "CW"],RM$Aligned[RM$Direction == "CCW"], na.rm = TRUE))
-print(t.test(RM$R1_Early[RM$Direction == "CW"],RM$R1_Early[RM$Direction == "CCW"]))
+print(t.test(RM$R1_Early[RM$Direction == "CW"],RM$R1_Early[RM$Direction == "CCW"], alternative = direction))
 print(etaSquaredTtest(RM$R1_Early[RM$Direction == "CW"],RM$R1_Early[RM$Direction == "CCW"], na.rm = TRUE))
-print(t.test(RM$R1_Late[RM$Direction == "CW"],RM$R1_Late[RM$Direction == "CCW"]))
+print(t.test(RM$R1_Late[RM$Direction == "CW"],RM$R1_Late[RM$Direction == "CCW"], alternative = direction))
 print(etaSquaredTtest(RM$R1_Late[RM$Direction == "CW"],RM$R1_Late[RM$Direction == "CCW"], na.rm = TRUE))
-print(t.test(RM$R2[RM$Direction == "CW"],RM$R2[RM$Direction == "CCW"]))
+print(t.test(RM$R2[RM$Direction == "CW"],RM$R2[RM$Direction == "CCW"], alternative = direction))
 print(etaSquaredTtest(RM$R2[RM$Direction == "CW"],RM$R2[RM$Direction == "CCW"], na.rm = TRUE))
-print(t.test(RM$EC[RM$Direction == "CW"],RM$EC[RM$Direction == "CCW"]))
+print(t.test(RM$EC[RM$Direction == "CW"],RM$EC[RM$Direction == "CCW"], alternative = direction))
 print(etaSquaredTtest(RM$EC[RM$Direction == "CW"],RM$EC[RM$Direction == "CCW"], na.rm = TRUE))
 }
 
